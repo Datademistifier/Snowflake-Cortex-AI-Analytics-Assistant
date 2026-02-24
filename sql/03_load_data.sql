@@ -1,0 +1,146 @@
+-- =============================================================
+-- FILE: 03_load_data.sql
+-- PURPOSE: Load synthetic claims data into PATIENT_CLAIMS table
+-- RUN AFTER: 02_create_tables.sql
+-- TWO OPTIONS: A) Direct INSERT  B) Load from CSV via stage
+-- =============================================================
+
+USE DATABASE  CORTEX_DEMO;
+USE SCHEMA    HEALTHCARE;
+USE WAREHOUSE CORTEX_WH;
+
+
+-- ──────────────────────────────────────────────────────────────
+-- OPTION A: Direct INSERT statements (quickest, no file upload)
+-- ──────────────────────────────────────────────────────────────
+
+INSERT INTO PATIENT_CLAIMS
+    (CLAIM_ID, PATIENT_ID, CLAIM_DATE, DIAGNOSIS_CODE, DIAGNOSIS_DESC,
+     MEDICATION_NAME, CLAIM_AMOUNT, CLAIM_STATUS, PROVIDER_NOTES, PATIENT_FEEDBACK)
+VALUES
+(
+    'CLM001', 'PAT001', '2024-01-15', 'E11.9',
+    'Type 2 diabetes without complications',
+    'Metformin 500mg', 125.00, 'APPROVED',
+    'Patient reports difficulty managing blood sugar levels despite medication compliance. Experiencing occasional dizziness and fatigue after meals. A1C slightly elevated at 7.8. Recommended dietary consultation with nutritionist and increased physical activity. Will reassess in 3 months.',
+    'The medication has been somewhat helpful but I still struggle with my energy levels throughout the day. I wish I had more guidance on what to eat.'
+),
+(
+    'CLM002', 'PAT002', '2024-01-18', 'J06.9',
+    'Acute upper respiratory infection',
+    'Amoxicillin 500mg', 89.50, 'APPROVED',
+    'Patient presented with severe sore throat and high fever of 101.4F for 3 days. Rapid strep test returned positive. Prescribed amoxicillin for 10-day course. Advised rest and fluids. Follow up requested if symptoms worsen or do not improve within 48 hours of starting antibiotics.',
+    'Doctor was very thorough and explained everything clearly. Got significantly better within a week of starting the antibiotics. Very satisfied with the care I received.'
+),
+(
+    'CLM003', 'PAT003', '2024-02-02', 'M54.5',
+    'Low back pain',
+    'Ibuprofen 400mg', 45.00, 'DENIED',
+    'Claim denied due to missing prior authorization for specialist referral. Patient has chronic lower back pain with limited mobility and difficulty standing for more than 20 minutes. X-ray shows mild disc degeneration at L4-L5. Physical therapy recommended as first-line treatment before orthopedic referral is considered.',
+    'I am really frustrated that my claim was denied. I have been dealing with this debilitating pain for months and I just need some relief. Nobody told me I needed prior authorization.'
+),
+(
+    'CLM004', 'PAT004', '2024-02-10', 'I10',
+    'Essential hypertension',
+    'Lisinopril 10mg', 210.00, 'APPROVED',
+    'Blood pressure well controlled on current ACE inhibitor regimen at 128/82. Patient fully compliant with medication schedule. No side effects reported. Potassium and kidney function labs within normal limits. Annual comprehensive metabolic panel ordered. Continue current dosage and follow up in 12 months.',
+    'My blood pressure is finally under control after years of trying different medications. Lisinopril works really well for me and I have absolutely no complaints.'
+),
+(
+    'CLM005', 'PAT005', '2024-02-14', 'F32.1',
+    'Major depressive disorder moderate',
+    'Sertraline 50mg', 320.00, 'PENDING',
+    'Patient presenting with moderate depressive episode. Reports persistent low mood, sleep disturbances with early morning awakening, and significant lack of motivation affecting work performance. PHQ-9 score of 14. Initiating SSRI therapy with sertraline 50mg. Behavioral health referral submitted. Recommend weekly check-ins for first month.',
+    'I have been waiting to hear back about my coverage for weeks. I really need this medication and the ongoing uncertainty is honestly making everything worse and adding to my anxiety.'
+),
+(
+    'CLM006', 'PAT006', '2024-02-20', 'K21.0',
+    'Gastroesophageal reflux disease',
+    'Omeprazole 20mg', 98.75, 'APPROVED',
+    'Patient experiencing frequent acid reflux symptoms, particularly after evening meals. Endoscopy not indicated at this stage. Lifestyle modifications discussed including avoiding trigger foods, not lying down after eating, and elevating head of bed. Prescribed omeprazole PPI therapy for 8 weeks. Follow up to assess response.',
+    'The medication started working within a few days and I am sleeping so much better now. The doctor gave me helpful tips about diet changes that have really made a difference.'
+),
+(
+    'CLM007', 'PAT007', '2024-03-01', 'J45.20',
+    'Mild intermittent asthma',
+    'Albuterol inhaler', 155.00, 'APPROVED',
+    'Patient reports increased frequency of mild wheezing episodes particularly during outdoor exercise and cold weather exposure. Spirometry confirms mild obstruction reversible with bronchodilator. Rescue inhaler prescribed. Educated on proper inhaler technique and importance of avoiding known triggers. Peak flow monitoring diary recommended.',
+    'I feel so much more confident now that I have an inhaler. The nurse was really patient in showing me how to use it correctly. My exercise has improved a lot.'
+),
+(
+    'CLM008', 'PAT008', '2024-03-05', 'E78.5',
+    'Hyperlipidemia',
+    'Atorvastatin 20mg', 275.00, 'DENIED',
+    'Claim denied as patient does not meet payer threshold for statin initiation based on current cardiovascular risk score calculation. LDL at 142 mg/dL. Recommended intensive lifestyle intervention including dietary changes and increased aerobic exercise for 6 months before pharmacological treatment is reconsidered. Resubmit with updated labs.',
+    'I do not understand why my claim was denied when my doctor clearly said I need this medication. It feels like the insurance company is overriding my doctor judgment.'
+),
+(
+    'CLM009', 'PAT009', '2024-03-12', 'N39.0',
+    'Urinary tract infection',
+    'Nitrofurantoin 100mg', 67.25, 'APPROVED',
+    'Uncomplicated lower UTI confirmed by urinalysis and culture showing E. coli sensitive to nitrofurantoin. 5-day course prescribed. Patient instructed to complete full antibiotic course even if symptoms resolve early. Encouraged adequate fluid intake. Return visit or telehealth if symptoms do not resolve within 72 hours or worsen.',
+    'I felt better within 2 days of starting the antibiotics which was such a relief. Quick and easy visit. The telehealth option was very convenient for a follow-up.'
+),
+(
+    'CLM010', 'PAT010', '2024-03-18', 'G43.909',
+    'Migraine unspecified without status migrainosus',
+    'Sumatriptan 50mg', 189.00, 'PENDING',
+    'Patient has history of episodic migraines occurring 3 to 4 times monthly with significant photophobia and nausea. Current OTC medications no longer providing adequate relief. Triptan therapy initiated. Migraine diary requested to track frequency, duration, and triggers. Neurologist referral under consideration if frequency continues at current level.',
+    'I have been suffering with these migraines for years and they are getting worse. I am really hoping this new medication finally gives me some relief. The wait time for approval is very stressful.'
+);
+
+
+-- ──────────────────────────────────────────────────────────────
+-- OPTION B: Load from CSV using internal stage (optional)
+-- Use this if you prefer uploading the CSV file
+-- ──────────────────────────────────────────────────────────────
+
+-- Step 1: Create a file format
+CREATE OR REPLACE FILE FORMAT CORTEX_DEMO.HEALTHCARE.CSV_FORMAT
+    TYPE             = 'CSV'
+    FIELD_DELIMITER  = ','
+    RECORD_DELIMITER = '\n'
+    SKIP_HEADER      = 1
+    FIELD_OPTIONALLY_ENCLOSED_BY = '"'
+    NULL_IF          = ('NULL', 'null', '')
+    EMPTY_FIELD_AS_NULL = TRUE
+    COMMENT = 'CSV format for claims data load';
+
+-- Step 2: Create an internal stage
+CREATE OR REPLACE STAGE CORTEX_DEMO.HEALTHCARE.CLAIMS_STAGE
+    FILE_FORMAT = CSV_FORMAT
+    COMMENT     = 'Internal stage for claims CSV upload';
+
+-- Step 3: Upload file via SnowSQL CLI (run in your terminal, not worksheet):
+-- PUT file:///path/to/data/sample_claims.csv @CLAIMS_STAGE;
+
+-- Step 4: Copy into staging table
+-- COPY INTO PATIENT_CLAIMS_STAGE
+-- FROM @CLAIMS_STAGE/sample_claims.csv
+-- FILE_FORMAT = (FORMAT_NAME = CSV_FORMAT)
+-- ON_ERROR = 'CONTINUE';
+
+-- Step 5: Insert from staging to main table with type casting
+-- INSERT INTO PATIENT_CLAIMS
+--     (CLAIM_ID, PATIENT_ID, CLAIM_DATE, DIAGNOSIS_CODE, DIAGNOSIS_DESC,
+--      MEDICATION_NAME, CLAIM_AMOUNT, CLAIM_STATUS, PROVIDER_NOTES, PATIENT_FEEDBACK)
+-- SELECT
+--     CLAIM_ID, PATIENT_ID,
+--     TRY_TO_DATE(CLAIM_DATE, 'YYYY-MM-DD'),
+--     DIAGNOSIS_CODE, DIAGNOSIS_DESC, MEDICATION_NAME,
+--     TRY_TO_DECIMAL(CLAIM_AMOUNT, 10, 2),
+--     CLAIM_STATUS, PROVIDER_NOTES, PATIENT_FEEDBACK
+-- FROM PATIENT_CLAIMS_STAGE;
+
+
+-- ── Verify load ──────────────────────────────────────────────
+SELECT COUNT(*) AS total_records FROM PATIENT_CLAIMS;
+
+SELECT
+    CLAIM_STATUS,
+    COUNT(*)            AS claim_count,
+    AVG(CLAIM_AMOUNT)   AS avg_amount,
+    SUM(CLAIM_AMOUNT)   AS total_amount
+FROM PATIENT_CLAIMS
+GROUP BY CLAIM_STATUS
+ORDER BY CLAIM_STATUS;
